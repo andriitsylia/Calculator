@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Calculator.Models;
+using Calculator.Services;
 
 namespace Calculator
 {
@@ -6,7 +9,10 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.Write("Enter the expression: ");
+            MathExpression expression = new MathExpression(Console.ReadLine());
+            Console.WriteLine(expression.Expression);
+            _ = ConvertToTokens.Convert(expression);
         }
     }
 }

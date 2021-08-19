@@ -9,11 +9,11 @@ namespace Calculator.Models
     public enum Operation
     {
         Add = 0,
-        Subtract= Add,
+        Subtract= 0,
         Multiply = 1,
-        Divide = Multiply,
+        Divide = 1,
         LeftBracket = 2,
-        RightBracket = LeftBracket,
+        RightBracket = 2,
         End = 3
     }
 }
