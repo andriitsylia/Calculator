@@ -9,15 +9,15 @@ namespace Calculator.Services
 {
     public class ConvertToTokens
     {
-        public static IEnumerable<Token<float>> Convert(MathExpression expression)
+        public static IEnumerable<Token> Convert(MathExpression expression)
         {
-            List<Token<float>> tokenList = new List<Token<float>>();
+            List<Token> tokenList = new List<Token>();
             char[] separators = new char[] { '+', '-', '*', '/' };
 
             string[] values = expression.Expression.Split(separators, StringSplitOptions.TrimEntries);
             int pos = 0, i = 0;
-            Token<float> token;
-            Operation op = Operation.Add;
+            Token token;
+            Operation op = Operation.End;
             while ((pos = expression.Expression.IndexOfAny(separators, pos)) != -1)
             {
                 switch (expression.Expression[pos])
@@ -35,11 +35,11 @@ namespace Calculator.Services
                         op = Operation.Divide;
                         break;
                 }
-                token = new Token<float>(float.Parse(values[i++]), op);
+                token = new Token(decimal.Parse(values[i++]), op);
                 tokenList.Add(token);
                 pos++;
             }
-            token = new Token<float>(float.Parse(values[i]), Operation.End);
+            token = new Token(decimal.Parse(values[i]), Operation.End);
             tokenList.Add(token);
             return tokenList;
         }

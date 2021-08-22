@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Calculator.Models
 {
-    public class Token<T>
+    public class Token
     {
-        private readonly T _value;
+        private readonly decimal _value;
         private readonly Operation _operation;
 
-        public T Value
+        public decimal Value
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Calculator.Models
             }
         }
 
-        public Token(T value, Operation operation)
+        public Token(decimal value, Operation operation)
         {
             _value = value;
             _operation = operation;

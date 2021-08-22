@@ -11,8 +11,9 @@ namespace Calculator
         {
             Console.Write("Enter the expression: ");
             MathExpression expression = new MathExpression(Console.ReadLine());
-            Console.WriteLine(expression.Expression);
-            _ = ConvertToTokens.Convert(expression);
+            Console.Write($"{expression.Expression}=");
+            List<Token> tl = (List<Token>)ConvertToTokens.Convert(expression);
+            Console.WriteLine(new SimpleCalculator().Calculate(tl));
         }
     }
 }
