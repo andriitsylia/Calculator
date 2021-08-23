@@ -12,7 +12,7 @@ namespace Calculator
             Console.Write("Enter the expression: ");
             MathExpression expression = new MathExpression(Console.ReadLine());
             Console.Write($"{expression.Expression}=");
-            List<Token> tl = (List<Token>)ConvertToTokens.Convert(expression);
+            List<Token> tl = (List<Token>)ParseExpression.Parse(expression);
             Console.WriteLine(new SimpleCalculator().Calculate(tl));
         }
     }
