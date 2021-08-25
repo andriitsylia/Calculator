@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Calculator.Models;
 
 namespace Calculator.Interfaces
 {
-    public interface IReadExpressionFrom
+    public interface IExpressionPrinter
     {
-        public void Read();
+        public void Print(MathExpression expression);
+        public void Print(string message);
     }
 }

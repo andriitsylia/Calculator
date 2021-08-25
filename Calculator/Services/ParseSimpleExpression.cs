@@ -7,7 +7,7 @@ using Calculator.Models;
 
 namespace Calculator.Services
 {
-    public class ParseExpression
+    public class ParseSimpleExpression
     {
         public static IEnumerable<Token> Parse(MathExpression expression)
         {

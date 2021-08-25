@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Calculator.Models;
 using Calculator.Services;
+using Calculator.Interfaces;
 
 namespace Calculator
 {
@@ -9,11 +10,13 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            Console.Write("Enter the expression: ");
-            MathExpression expression = new MathExpression(Console.ReadLine());
-            Console.Write($"{expression.Expression}=");
-            List<Token> tl = (List<Token>)ParseExpression.Parse(expression);
-            Console.WriteLine(new SimpleCalculator().Calculate(tl));
+            IExpressionReader readFromConsole = new ReadExpressionFromConsole();
+            MathExpression expression = readFromConsole.Read();
+            
+            _ = new SimpleCalculator().Calculate(expression);
+            
+            IExpressionPrinter printToConsole = new PrintExpressionToConsole();
+            printToConsole.Print(expression);
         }
     }
 }

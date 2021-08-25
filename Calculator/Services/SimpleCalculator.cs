@@ -10,8 +10,9 @@ namespace Calculator.Services
     public class SimpleCalculator
     {
 
-        public decimal Calculate(List<Token> tl)
+        public bool Calculate(MathExpression  expression)
         {
+            List<Token> tl = (List<Token>)ParseSimpleExpression.Parse(expression);
             List<Token> tokenList = new List<Token>();
             Token token;
             int i = 0;
@@ -30,7 +31,17 @@ namespace Calculator.Services
                     }
                     if (op == Operation.Divide)
                     {
-                        value /= tl[i + 1].Value;
+                        if (tl[i + 1].Value != 0)
+                        {
+                            value /= tl[i + 1].Value;
+                        }
+                        else
+                        {
+                            expression.Valid = false;
+                            expression.Info = "Error: devide by zero";
+                            return expression.Valid;
+                        }
+                        
                     }
                     op = tl[i + 1].Operation;
                     i++;
@@ -54,7 +65,8 @@ namespace Calculator.Services
                 }
                 i++;
             }
-            return value;
+            expression.Value = value;
+            return expression.Valid;
         }
     }
 }
