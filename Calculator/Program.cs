@@ -12,9 +12,11 @@ namespace Calculator
         {
             IExpressionReader readFromConsole = new ReadExpressionFromConsole();
             MathExpression expression = readFromConsole.Read();
-            
-            _ = new SimpleCalculator().Calculate(expression);
-            
+
+            //_ = new SimpleCalculator().Calculate(expression);
+            ParseExpressionWithBrackets pewb = new ParseExpressionWithBrackets();
+            pewb.Parse(expression);
+
             IExpressionPrinter printToConsole = new PrintExpressionToConsole();
             printToConsole.Print(expression);
         }
