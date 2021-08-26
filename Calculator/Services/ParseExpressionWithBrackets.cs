@@ -12,7 +12,7 @@ namespace Calculator.Services
         public void Parse(MathExpression expression)
         {
 
-            Parsing(expression.Expression);
+            (expression.Value, _) = Parsing(expression.Expression);
            
         }
 
@@ -49,8 +49,10 @@ namespace Calculator.Services
                 }
                 i++;
             }
-            Console.WriteLine(simpleString);
-            return (0, 0);
+            //Console.WriteLine(simpleString);
+            tempExpression = new MathExpression(simpleString);
+            _ = new SimpleCalculator().Calculate(tempExpression);
+            return (tempExpression.Value, i);
         }
     }
 }

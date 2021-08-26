@@ -47,10 +47,10 @@ namespace Calculator
 
                 foreach (MathExpression expression in expressions)
                 {
-                    //pewb.Parse(expression);
+                    pewb.Parse(expression);
 
-                    //expressionPrinter.Print(expression);
-                    Console.WriteLine(expression.Expression);
+                    expressionPrinter.Print(expression);
+                    //Console.WriteLine(expression.Expression);
                 }
             }
             else

@@ -12,24 +12,44 @@ namespace Calculator.Services
         public static IEnumerable<Token> Parse(MathExpression expression)
         {
             List<Token> tokenList = new List<Token>();
-            char[] separators = new char[] { '+', '-', '*', '/' };
+            char[] operations = new char[] { '+', '-', '*', '/' };
 
-            string[] values = expression.Expression.Split(separators, StringSplitOptions.TrimEntries);
-            
-            int separatorPositionInExpression = 0;
-            int itemValuesCounter = 0;
+            string[] values = expression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+
+            int operationPosition = 0;
+            int valuesCounter = 0;
+            bool isUnarySign = false;
+            int multiplicant = 1;
             Token token;
             Operation operation = Operation.End;
             
-            while ((separatorPositionInExpression = expression.Expression.IndexOfAny(separators, separatorPositionInExpression)) != -1)
+            while ((operationPosition = expression.Expression.IndexOfAny(operations, operationPosition)) != -1)
             {
-                switch (expression.Expression[separatorPositionInExpression])
+                    switch (expression.Expression[operationPosition])
                 {
                     case '+':
-                        operation = Operation.Add;
+                        if (!string.IsNullOrWhiteSpace(values[valuesCounter]))
+                        {
+                            operation = Operation.Add;
+                        }
+                        else
+                        {
+                            isUnarySign = true;
+                            multiplicant = 1;
+                            valuesCounter++;
+                        }
                         break;
                     case '-':
-                        operation = Operation.Subtract;
+                        if (!string.IsNullOrWhiteSpace(values[valuesCounter]))
+                        {
+                            operation = Operation.Subtract;
+                        }
+                        else
+                        {
+                            isUnarySign = true;
+                            multiplicant = -1;
+                            valuesCounter++;
+                        }
                         break;
                     case '*':
                         operation = Operation.Multiply;
@@ -38,11 +58,16 @@ namespace Calculator.Services
                         operation = Operation.Divide;
                         break;
                 }
-                token = new Token(decimal.Parse(values[itemValuesCounter++]), operation);
-                tokenList.Add(token);
-                separatorPositionInExpression++;
+                if (!isUnarySign)
+                {
+                    token = new Token(decimal.Parse(values[valuesCounter++])*multiplicant, operation);
+                    tokenList.Add(token);
+                    multiplicant = 1;
+                }
+                operationPosition++;
+                isUnarySign = false;
             }
-            token = new Token(decimal.Parse(values[itemValuesCounter]), Operation.End);
+            token = new Token(decimal.Parse(values[valuesCounter])*multiplicant, Operation.End);
             tokenList.Add(token);
             return tokenList;
         }
