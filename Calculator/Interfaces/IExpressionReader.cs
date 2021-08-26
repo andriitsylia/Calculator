@@ -9,6 +9,6 @@ namespace Calculator.Interfaces
 {
     public interface IExpressionReader
     {
-        public MathExpression Read();
+        public IEnumerable<MathExpression> Read();
     }
 }
