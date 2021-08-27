@@ -12,11 +12,11 @@ namespace Calculator.Services
         public void Parse(MathExpression expression)
         {
 
-            (expression.Value, _) = Parsing(expression.Expression);
+            (expression.Value, _, expression.Valid) = Parsing(expression.Expression);
            
         }
 
-        private (decimal, int) Parsing(string expression)
+        private (decimal, int, bool) Parsing(string expression)
         {
             char[] separators = new char[] { '+', '-', '*', '/', '(', ')' };
             string simpleString=string.Empty;
@@ -33,7 +33,7 @@ namespace Calculator.Services
                     {
                         tempExpression = new MathExpression(simpleString);
                         _ = new SimpleCalculator().Calculate(tempExpression);
-                        return (tempExpression.Value, i);
+                        return (tempExpression.Value, i, tempExpression.Valid);
                     }
                     else
                     {
@@ -43,16 +43,15 @@ namespace Calculator.Services
                 else
                 {
                     posBegin = i;
-                    (tempValue, posEnd) = Parsing(expression.Substring(i + 1, expression.Length - (i + 1)));
+                    (tempValue, posEnd, _) = Parsing(expression.Substring(i + 1, expression.Length - (i + 1)));
                     i = posBegin + posEnd + 1;
                     simpleString += tempValue.ToString();
                 }
                 i++;
             }
-            //Console.WriteLine(simpleString);
             tempExpression = new MathExpression(simpleString);
             _ = new SimpleCalculator().Calculate(tempExpression);
-            return (tempExpression.Value, i);
+            return (tempExpression.Value, i, tempExpression.Valid);
         }
     }
 }

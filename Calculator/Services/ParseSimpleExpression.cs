@@ -25,7 +25,7 @@ namespace Calculator.Services
             
             while ((operationPosition = expression.Expression.IndexOfAny(operations, operationPosition)) != -1)
             {
-                    switch (expression.Expression[operationPosition])
+                switch (expression.Expression[operationPosition])
                 {
                     case '+':
                         if (!string.IsNullOrWhiteSpace(values[valuesCounter]))

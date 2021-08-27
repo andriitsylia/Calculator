@@ -10,6 +10,7 @@ namespace Calculator.Interfaces
     public interface IExpressionPrinter
     {
         public void Print(MathExpression expression);
+        public void Print(IEnumerable<MathExpression> expressions);
         public void Print(string message);
     }
 }

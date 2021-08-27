@@ -22,9 +22,26 @@ namespace Calculator.Services
             }
         }
 
+        public void Print(IEnumerable<MathExpression> expressions)
+        {
+            foreach (MathExpression expression in expressions)
+            {
+                if (expression.Valid)
+                {
+                    Console.WriteLine($"{expression.Expression} = {expression.Value}");
+                }
+                else
+                {
+                    Console.WriteLine($"{expression.Expression} = {expression.Info}");
+                }
+            }
+        }
+
         public void Print(string message)
         {
             Console.WriteLine(message);
         }
+
+        
     }
 }

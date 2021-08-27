@@ -19,6 +19,7 @@ namespace Calculator
             IExpressionReader expressionReader;
             IExpressionPrinter expressionPrinter;
             List<MathExpression> expressions;
+            ExpressionValidator validator = new ExpressionValidator();
 
             if (calculatorMode == 1)
             {
@@ -29,17 +30,22 @@ namespace Calculator
                 
                 foreach (MathExpression expression in expressions)
                 {
-                    _ = new SimpleCalculator().Calculate(expression);
-
-                    expressionPrinter.Print(expression);
+                    if (validator.Validate(expression))
+                    {
+                        _ = new SimpleCalculator().Calculate(expression);
+                    }
+                    //expressionPrinter.Print(expression);
                 }
+                expressionPrinter.Print(expressions);
             }
             else if (calculatorMode == 2)
             {
-                Console.Write("Enter file name: ");
-                string fileName = Console.ReadLine();
+                Console.Write("Enter source file name: ");
+                string sourceFileName = Console.ReadLine();
+                Console.Write("Enter destination file name: ");
+                string destinationFileName = Console.ReadLine();
 
-                IExpressionReader readFromConsole = new ReadExpressionFromFile(fileName);
+                IExpressionReader readFromConsole = new ReadExpressionFromFile(sourceFileName);
                 expressions = (List<MathExpression>)readFromConsole.Read();
                 
                 expressionPrinter = new PrintExpressionToConsole();
@@ -47,11 +53,13 @@ namespace Calculator
 
                 foreach (MathExpression expression in expressions)
                 {
-                    pewb.Parse(expression);
-
-                    expressionPrinter.Print(expression);
-                    //Console.WriteLine(expression.Expression);
+                    if (validator.Validate(expression))
+                    {
+                        pewb.Parse(expression);
+                    }
+                    //expressionPrinter.Print(expression);
                 }
+                expressionPrinter.Print(expressions);
             }
             else
             {

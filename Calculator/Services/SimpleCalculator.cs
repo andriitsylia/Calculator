@@ -38,7 +38,7 @@ namespace Calculator.Services
                         else
                         {
                             expression.Valid = false;
-                            expression.Info = "Error: devide by zero";
+                            expression.Info = "divide by zero";
                             return expression.Valid;
                         }
                         
