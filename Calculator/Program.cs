@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Calculator.Models;
-using Calculator.Services;
-using Calculator.Interfaces;
+﻿using Calculator.Services;
+using System;
 
 namespace Calculator
 {
@@ -11,61 +8,22 @@ namespace Calculator
         static void Main(string[] args)
         {
             Console.WriteLine("Choose the calculator\'s mode:");
-            Console.WriteLine("1. +-*/, Console.");
-            Console.WriteLine("2. +-*/(), File.");
+            Console.WriteLine("1. + - * /, Console.");
+            Console.WriteLine("2. + - * / ( ), File.");
             Console.Write("> ");
-            
-            int calculatorMode = int.Parse(Console.ReadLine());
-            IExpressionReader expressionReader;
-            IExpressionPrinter expressionPrinter;
-            List<MathExpression> expressions;
-            ExpressionValidator validator = new ExpressionValidator();
 
-            if (calculatorMode == 1)
+            if (int.TryParse(Console.ReadLine(), out int calculatorMode))
             {
-                expressionReader = new ReadExpressionFromConsole();
-                expressions = (List<MathExpression>)expressionReader.Read();
-                
-                expressionPrinter = new PrintExpressionToConsole();
-                
-                foreach (MathExpression expression in expressions)
+                if (calculatorMode == 1 || calculatorMode == 2)
                 {
-                    if (validator.Validate(expression))
-                    {
-                        _ = new SimpleCalculator().Calculate(expression);
-                    }
-                    //expressionPrinter.Print(expression);
+                    Worker worker = new();
+                    worker.Run(calculatorMode);
                 }
-                expressionPrinter.Print(expressions);
-            }
-            else if (calculatorMode == 2)
-            {
-                Console.Write("Enter source file name: ");
-                string sourceFileName = Console.ReadLine();
-                Console.Write("Enter destination file name: ");
-                string destinationFileName = Console.ReadLine();
-
-                IExpressionReader readFromConsole = new ReadExpressionFromFile(sourceFileName);
-                expressions = (List<MathExpression>)readFromConsole.Read();
-                
-                expressionPrinter = new PrintExpressionToConsole();
-                ParseExpressionWithBrackets pewb = new ParseExpressionWithBrackets();
-
-                foreach (MathExpression expression in expressions)
+                else
                 {
-                    if (validator.Validate(expression))
-                    {
-                        pewb.Parse(expression);
-                    }
-                    //expressionPrinter.Print(expression);
+                    Console.WriteLine("You made a wrong choice.");
                 }
-                expressionPrinter.Print(expressions);
             }
-            else
-            {
-                Console.WriteLine("You made a wrong choice.");
-            }
-
         }
     }
 }

@@ -1,44 +1,38 @@
 ﻿using Calculator.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calculator.Services
 {
     public class ExpressionValidator
     {
-        public bool Validate(MathExpression expression)
+        public (bool, string) Validate(SourceExpression sourceExpression)
         {
-            if (!OperandsCheck(expression))
+            if (!OperandsCheck(sourceExpression))
             {
-                expression.Valid = false;
-                expression.Info = "invalid expression (operands)";
-                return expression.Valid;
+                return (false, "invalid expression (operands)");
             }
 
-            if (!BracketsCheck(expression))
+            if (DivideByZeroCheck(sourceExpression))
             {
-                expression.Valid = false;
-                expression.Info = "invalid expression (brackets)";
-                return expression.Valid;
+                return (false, "divide by zero");
             }
 
-            expression.Valid = true;
-            return expression.Valid;
+            if (!BracketsCheck(sourceExpression))
+            {
+                return (false, "invalid expression (brackets)");
+            }
+
+            return (true, "");
         }
 
-        private bool OperandsCheck(MathExpression expression)
+        private bool OperandsCheck(SourceExpression sourceExpression)
         {
             char[] operations = new char[] { '+', '-', '*', '/', '(', ')' };
-
-            string[] values = expression.Expression.Split(operations, StringSplitOptions.TrimEntries);
-            decimal tempValue;
+            string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
 
             foreach (string value in values)
             {
-                if (!(string.IsNullOrWhiteSpace(value) || decimal.TryParse(value, out tempValue)))
+                if (!(string.IsNullOrWhiteSpace(value) || decimal.TryParse(value, out _)))
                 {
                     return false;
                 }
@@ -46,14 +40,39 @@ namespace Calculator.Services
             return true;
         }
 
-        private bool BracketsCheck(MathExpression expression)
+        private bool DivideByZeroCheck(SourceExpression sourceExpression)
+        {
+            char[] operations = new char[] { '+', '-', '*', '/', '(', ')' };
+            int dividePosition = 0;
+            string value;
+            while ((dividePosition = sourceExpression.Expression.IndexOf('/', dividePosition)) != -1)
+            {
+                int signPosition = sourceExpression.Expression.IndexOfAny(operations, dividePosition + 1);
+                if (signPosition != -1)
+                {
+                    value = sourceExpression.Expression.Substring(dividePosition + 1, signPosition - dividePosition - 1); 
+                }
+                else
+                {
+                    value = sourceExpression.Expression.Substring(dividePosition + 1);
+                }
+                if (!string.IsNullOrWhiteSpace(value) && decimal.Parse(value) == 0)
+                {
+                    return true;
+                }
+                dividePosition++;
+            }
+            return false;
+        }
+
+        private bool BracketsCheck(SourceExpression sourceExpression)
         {
             int bracketsCounter = 0;
             int i = 0;
             
-            while (i < expression.Expression.Length)
+            while (i < sourceExpression.Expression.Length)
             {
-                switch (expression.Expression[i])
+                switch (sourceExpression.Expression[i])
                 {
                     case '(':
                         bracketsCounter++;
@@ -68,7 +87,7 @@ namespace Calculator.Services
                 }
                 i++;
             }
-            return bracketsCounter == 0 ? true: false;
+            return bracketsCounter == 0;
         }
     }
 }

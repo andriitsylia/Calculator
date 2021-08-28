@@ -1,47 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Calculator.Interfaces;
+﻿using Calculator.Interfaces;
 using Calculator.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Calculator.Services
 {
     public class PrintExpressionToConsole : IExpressionPrinter
     {
-        public void Print(MathExpression expression)
+        public void Print(IEnumerable<ReportExpression> reportExpressions)
         {
-            if (expression.Valid)
+            foreach (ReportExpression reportExpression in reportExpressions)
             {
-                Console.WriteLine($"{expression.Expression} = {expression.Value}");
-            }
-            else
-            {
-                Console.WriteLine($"{expression.Expression} = {expression.Info}");
+                Console.WriteLine(reportExpression.Expression);
             }
         }
-
-        public void Print(IEnumerable<MathExpression> expressions)
-        {
-            foreach (MathExpression expression in expressions)
-            {
-                if (expression.Valid)
-                {
-                    Console.WriteLine($"{expression.Expression} = {expression.Value}");
-                }
-                else
-                {
-                    Console.WriteLine($"{expression.Expression} = {expression.Info}");
-                }
-            }
-        }
-
-        public void Print(string message)
-        {
-            Console.WriteLine(message);
-        }
-
-        
     }
 }

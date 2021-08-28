@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Calculator.Interfaces;
+using Calculator.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Calculator.Interfaces;
-using Calculator.Models;
 
 namespace Calculator.Services
 {
@@ -15,33 +12,26 @@ namespace Calculator.Services
 
         public ReadExpressionFromFile(string fileName)
         {
-            _fileName = fileName;
+            _fileName = fileName
+                        ?? throw new ArgumentNullException(nameof(fileName), "Received a null argument");
         }
-        public IEnumerable<MathExpression> Read()
+        public IEnumerable<SourceExpression> Read()
         {
-            if (string.IsNullOrEmpty(_fileName))
-            {
-                throw new ArgumentNullException("Received a null or empty file name.");
-            }
-
-            List<MathExpression> expressions = new List<MathExpression>();
+            List<SourceExpression> sourceExpressions = new();
             if (File.Exists(_fileName))
             {
-                using (StreamReader file = new StreamReader(_fileName))
+                using StreamReader file = new(_fileName);
+                string line;
+                while ((line = file.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        expressions.Add(new MathExpression(line));
-                    }
+                    sourceExpressions.Add(new SourceExpression(line));
                 }
             }
             else
             {
-                throw new FileNotFoundException($"File doesn't exists {_fileName}.");
+                throw new FileNotFoundException($"File {_fileName} doesn't exists.");
             }
-
-            return expressions;
+            return sourceExpressions;
         }
     }
 }

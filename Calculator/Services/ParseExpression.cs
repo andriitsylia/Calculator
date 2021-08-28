@@ -1,31 +1,26 @@
-﻿using System;
+﻿using Calculator.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Calculator.Models;
 
 namespace Calculator.Services
 {
-    public class ParseSimpleExpression
+    public class ParseExpression
     {
-        public static IEnumerable<Token> Parse(MathExpression expression)
+        public ParsedExpression Parse(SourceExpression sourceExpression)
         {
-            List<Token> tokenList = new List<Token>();
             char[] operations = new char[] { '+', '-', '*', '/' };
-
-            string[] values = expression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+            string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
 
             int operationPosition = 0;
             int valuesCounter = 0;
             bool isUnarySign = false;
             int multiplicant = 1;
-            Token token;
             Operation operation = Operation.End;
-            
-            while ((operationPosition = expression.Expression.IndexOfAny(operations, operationPosition)) != -1)
+            List<Token> tokens = new();
+
+            while ((operationPosition = sourceExpression.Expression.IndexOfAny(operations, operationPosition)) != -1)
             {
-                switch (expression.Expression[operationPosition])
+                switch (sourceExpression.Expression[operationPosition])
                 {
                     case '+':
                         if (!string.IsNullOrWhiteSpace(values[valuesCounter]))
@@ -57,19 +52,21 @@ namespace Calculator.Services
                     case '/':
                         operation = Operation.Divide;
                         break;
+                    default:
+                        break;
                 }
                 if (!isUnarySign)
                 {
-                    token = new Token(decimal.Parse(values[valuesCounter++])*multiplicant, operation);
-                    tokenList.Add(token);
+                    tokens.Add(new Token(decimal.Parse(values[valuesCounter++]) * multiplicant,
+                               operation));
                     multiplicant = 1;
                 }
                 operationPosition++;
                 isUnarySign = false;
             }
-            token = new Token(decimal.Parse(values[valuesCounter])*multiplicant, Operation.End);
-            tokenList.Add(token);
-            return tokenList;
+            tokens.Add(new Token(decimal.Parse(values[valuesCounter]) * multiplicant, Operation.End));
+            
+            return new ParsedExpression(sourceExpression.Expression, tokens);
         }
     }
 }
