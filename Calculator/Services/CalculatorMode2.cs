@@ -10,7 +10,7 @@ namespace Calculator.Services
             ServiceExpression tempServiceExpression;
             ExpressionValidator validator = new();
 
-            (bool isValidSourceExpression, string info) = validator.Validate(sourceExpression);
+            (bool isValidSourceExpression, string info) = validator.Mode2Validate(sourceExpression);
 
             if (isValidSourceExpression)
             {

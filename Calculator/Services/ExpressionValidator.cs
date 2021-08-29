@@ -5,7 +5,7 @@ namespace Calculator.Services
 {
     public class ExpressionValidator
     {
-        public (bool, string) Validate(SourceExpression sourceExpression)
+        public (bool, string) Mode1Validate(SourceExpression sourceExpression)
         {
             if (!OperandsCheck(sourceExpression))
             {
@@ -15,6 +15,16 @@ namespace Calculator.Services
             if (DivideByZeroCheck(sourceExpression))
             {
                 return (false, "divide by zero");
+            }
+
+            return (true, "");
+        }
+
+        public (bool, string) Mode2Validate(SourceExpression sourceExpression)
+        {
+            if (!OperandsCheck(sourceExpression))
+            {
+                return (false, "invalid expression (operands)");
             }
 
             if (!BracketsCheck(sourceExpression))

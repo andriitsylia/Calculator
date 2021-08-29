@@ -11,18 +11,19 @@ namespace Calculator
             Console.WriteLine("1. + - * /, Console.");
             Console.WriteLine("2. + - * / ( ), File.");
             Console.Write("> ");
+            Worker worker = new();
 
-            if (int.TryParse(Console.ReadLine(), out int calculatorMode))
+            switch (Console.ReadLine())
             {
-                if (calculatorMode == 1 || calculatorMode == 2)
-                {
-                    Worker worker = new();
-                    worker.Run(calculatorMode);
-                }
-                else
-                {
+                case "1":
+                    worker.Run(1);
+                    break;
+                case "2":
+                    worker.Run(2);
+                    break;
+                default:
                     Console.WriteLine("You made a wrong choice.");
-                }
+                    break;
             }
         }
     }

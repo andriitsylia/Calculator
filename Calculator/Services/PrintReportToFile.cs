@@ -6,11 +6,11 @@ using System.IO;
 
 namespace Calculator.Services
 {
-    public class PrintExpressionToFile: IExpressionPrinter
+    public class PrintReportToFile: IExpressionPrinter
     {
         private readonly string _fileName;
 
-        public PrintExpressionToFile(string fileName)
+        public PrintReportToFile(string fileName)
         {
             _fileName = fileName
                         ?? throw new ArgumentNullException(nameof(fileName), "Received a null argument");

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Calculator.Services
 {
-    public class PrintExpressionToConsole : IExpressionPrinter
+    public class PrintReportToConsole : IExpressionPrinter
     {
         public void Print(IEnumerable<ReportExpression> reportExpressions)
         {

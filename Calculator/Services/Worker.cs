@@ -22,7 +22,7 @@ namespace Calculator.Services
                     expressionReader = new ReadExpressionFromConsole();
                     sourceExpressions = (List<SourceExpression>)expressionReader.Read();
 
-                    expressionPrinter = new PrintExpressionToConsole();
+                    expressionPrinter = new PrintReportToConsole();
 
                     foreach (SourceExpression sourceExpression in sourceExpressions)
                     {
@@ -45,7 +45,7 @@ namespace Calculator.Services
                     IExpressionReader readFromConsole = new ReadExpressionFromFile(sourceFileName);
                     sourceExpressions = (List<SourceExpression>)readFromConsole.Read();
 
-                    expressionPrinter = new PrintExpressionToFile(destinationFileName);
+                    expressionPrinter = new PrintReportToFile(destinationFileName);
 
                     foreach (SourceExpression sourceExpression in sourceExpressions)
                     {
@@ -53,7 +53,7 @@ namespace Calculator.Services
                     }
                     reportExpressions = (List<ReportExpression>)new PrepareReportExpression().Prepare(serviceExpressions);
                     expressionPrinter.Print(reportExpressions);
-                    Console.WriteLine($"File {sourceFileName} was created.");
+                    Console.WriteLine($"File {destinationFileName} was created.");
                     break;
                 default:
                     break;
