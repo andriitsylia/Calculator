@@ -65,8 +65,9 @@ namespace Calculator.Services
                 isUnarySign = false;
             }
             tokens.Add(new Token(decimal.Parse(values[valuesCounter]) * multiplicant, Operation.End));
-            
+
             return new ParsedExpression(sourceExpression.Expression, tokens);
+
         }
     }
 }

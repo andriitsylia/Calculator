@@ -2,7 +2,7 @@
 
 namespace Calculator.Services
 {
-    public class CalculatorMode2
+    public class CalculatorWithBrackets
     {
         public ServiceExpression Calculate(SourceExpression sourceExpression)
         {
@@ -10,7 +10,7 @@ namespace Calculator.Services
             ServiceExpression tempServiceExpression;
             ExpressionValidator validator = new();
 
-            (bool isValidSourceExpression, string info) = validator.Mode2Validate(sourceExpression);
+            (bool isValidSourceExpression, string info) = validator.ValidateWithBrackets(sourceExpression);
 
             if (isValidSourceExpression)
             {
@@ -45,7 +45,7 @@ namespace Calculator.Services
                     if (expression[i] == ')')
                     {
                         sourceExpression = new SourceExpression(simpleString);
-                        serviceExpression = new CalculatorMode1().Calculate(sourceExpression);
+                        serviceExpression = new CalculatorWithoutBrackets().Calculate(sourceExpression);
                         return (serviceExpression, i);
                     }
                     else
@@ -63,7 +63,7 @@ namespace Calculator.Services
                 i++;
             }
             sourceExpression = new SourceExpression(simpleString);
-            serviceExpression = new CalculatorMode1().Calculate(sourceExpression);
+            serviceExpression = new CalculatorWithoutBrackets().Calculate(sourceExpression);
             return (serviceExpression, i);
         }
     }

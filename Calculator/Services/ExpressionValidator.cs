@@ -1,15 +1,21 @@
 ﻿using Calculator.Models;
 using System;
+using System.Linq;
 
 namespace Calculator.Services
 {
     public class ExpressionValidator
     {
-        public (bool, string) Mode1Validate(SourceExpression sourceExpression)
+        public (bool, string) ValidateWithoutBrackets(SourceExpression sourceExpression)
         {
-            if (!OperandsCheck(sourceExpression))
+            if (!OperandCheck(sourceExpression))
             {
                 return (false, "invalid expression (operands)");
+            }
+
+            if (!DoubleOperationCheck(sourceExpression))
+            {
+                return (false, "invalid expression (operations)");
             }
 
             if (DivideByZeroCheck(sourceExpression))
@@ -17,12 +23,12 @@ namespace Calculator.Services
                 return (false, "divide by zero");
             }
 
-            return (true, "");
+            return (true, "valid expression");
         }
 
-        public (bool, string) Mode2Validate(SourceExpression sourceExpression)
+        public (bool, string) ValidateWithBrackets(SourceExpression sourceExpression)
         {
-            if (!OperandsCheck(sourceExpression))
+            if (!OperandCheck(sourceExpression))
             {
                 return (false, "invalid expression (operands)");
             }
@@ -32,13 +38,18 @@ namespace Calculator.Services
                 return (false, "invalid expression (brackets)");
             }
 
-            return (true, "");
+            return (true, "valid expression");
         }
 
-        private bool OperandsCheck(SourceExpression sourceExpression)
+        private bool OperandCheck(SourceExpression sourceExpression)
         {
             char[] operations = new char[] { '+', '-', '*', '/', '(', ')' };
             string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+
+            if (!values.Where(value=>value != string.Empty).Any())
+            {
+                return (false);
+            }
 
             foreach (string value in values)
             {
@@ -50,9 +61,71 @@ namespace Calculator.Services
             return true;
         }
 
+        private bool DoubleOperationCheck(SourceExpression sourceExpression)
+        {
+            char[] operations = new char[] { '+', '-', '*', '/' };
+            string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+
+            int firstOperationPosition = 0;
+            int valuesCounter = 0;
+            firstOperationPosition = sourceExpression.Expression.IndexOfAny(operations, firstOperationPosition);
+            int secondOperationPosition;
+            while ((secondOperationPosition = sourceExpression.Expression.IndexOfAny(operations, firstOperationPosition + 1)) != -1)
+            {
+                if (string.IsNullOrWhiteSpace(values[valuesCounter])
+                    && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                {
+                    return false;
+                }
+
+                switch (sourceExpression.Expression[firstOperationPosition])
+                {
+                    case '+':
+                        if ((sourceExpression.Expression[secondOperationPosition] == '*'
+                             || sourceExpression.Expression[secondOperationPosition] == '/')
+                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                        {
+                            return false;
+                        }
+                        break;
+                    case '-':
+                        if ((sourceExpression.Expression[secondOperationPosition] == '*'
+                             || sourceExpression.Expression[secondOperationPosition] == '/')
+                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                        {
+                            return false;
+                        }
+                        break;
+                    case '*':
+                        if ((sourceExpression.Expression[secondOperationPosition] == '*'
+                             || sourceExpression.Expression[secondOperationPosition] == '/')
+                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                        {
+                            return false;
+                        }
+                        break;
+                    case '/':
+                        if ((sourceExpression.Expression[secondOperationPosition] == '*'
+                             || sourceExpression.Expression[secondOperationPosition] == '/')
+                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                        {
+                            return false;
+                        }
+                        break;
+                }
+                firstOperationPosition = secondOperationPosition;
+                valuesCounter++;
+            }
+            if (string.IsNullOrWhiteSpace(values[valuesCounter]))
+            {
+                return false;
+            }
+            return true;
+        }
+
         private bool DivideByZeroCheck(SourceExpression sourceExpression)
         {
-            char[] operations = new char[] { '+', '-', '*', '/', '(', ')' };
+            char[] operations = new char[] { '+', '-', '*', '/' };
             int dividePosition = 0;
             string value;
             while ((dividePosition = sourceExpression.Expression.IndexOf('/', dividePosition)) != -1)

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Calculator.Services
 {
-    public class CalculatorMode1
+    public class CalculatorWithoutBrackets
     {
         public ServiceExpression Calculate(SourceExpression sourceExpression)
         {
             ServiceExpression serviceExpression;
             ExpressionValidator validator = new();
             
-            (bool isValidSourceExpression, string info) = validator.Mode1Validate(sourceExpression);
+            (bool isValidSourceExpression, string info) = validator.ValidateWithoutBrackets(sourceExpression);
             
             if (isValidSourceExpression)
             {

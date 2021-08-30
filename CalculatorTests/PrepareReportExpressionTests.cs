@@ -8,7 +8,7 @@ namespace CalculatorTests
     public class PrepareReportExpressionTests
     {
 
-        static readonly ServiceExpression serviceExpressionValid = new("1+2-3*4+100/5", 11, true, "");
+        static readonly ServiceExpression serviceExpressionValid = new("1+2-3*4+100/5", 11, true, "valid expression");
         static readonly ServiceExpression serviceExpressionInValid1 = new("1+x+5", 0, false, "invalid expression (operands)");
         static readonly ServiceExpression serviceExpressionInValid2 = new("1+12/0+23", 0, false, "divide by zero");
         static readonly ServiceExpression serviceExpressionInValid3 = new("1+((23-18)*12+6+(25/5)+4", 0, false, "invalid expression (brackets)");
