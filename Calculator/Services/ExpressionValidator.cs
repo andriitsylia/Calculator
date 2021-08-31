@@ -1,5 +1,6 @@
 ﻿using Calculator.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculator.Services
@@ -44,27 +45,39 @@ namespace Calculator.Services
         private bool OperandCheck(SourceExpression sourceExpression)
         {
             char[] operations = new char[] { '+', '-', '*', '/', '(', ')' };
-            string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+            string[] operands = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
 
-            if (!values.Where(value=>value != string.Empty).Any())
+            if (!operands.Where(value=>value != string.Empty).Any())
             {
                 return (false);
             }
 
-            foreach (string value in values)
+            if (operands.Where(value => value != string.Empty && !decimal.TryParse(value, out _)).Any())
             {
-                if (!(string.IsNullOrWhiteSpace(value) || decimal.TryParse(value, out _)))
-                {
-                    return false;
-                }
+                return false;
             }
+
             return true;
         }
 
         private bool OperationCheck(SourceExpression sourceExpression)
         {
             char[] operations = new char[] { '+', '-', '*', '/' };
-            string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+            string[] operands = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
+
+            IEnumerable<char> operationArray = sourceExpression.Expression.ToCharArray()
+                                                .Where(operation => operation is '+' or '-' or '*' or '/')
+                                                .Select(operation => operation);
+
+            if ((operationArray.Count() != 0) && (operationArray.ElementAt(0) is '*' or '/') && (operands[0] == string.Empty))
+            {
+                return false;
+            }
+
+            if (operands[operands.Length - 1] == string.Empty)
+            {
+                return false;
+            }
 
             int firstOperationPosition = 0;
             int valuesCounter = 0;
@@ -72,8 +85,8 @@ namespace Calculator.Services
             int secondOperationPosition;
             while ((secondOperationPosition = sourceExpression.Expression.IndexOfAny(operations, firstOperationPosition + 1)) != -1)
             {
-                if (string.IsNullOrWhiteSpace(values[valuesCounter])
-                    && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                if (string.IsNullOrWhiteSpace(operands[valuesCounter])
+                    && string.IsNullOrWhiteSpace(operands[valuesCounter + 1]))
                 {
                     return false;
                 }
@@ -83,7 +96,7 @@ namespace Calculator.Services
                     case '+':
                         if ((sourceExpression.Expression[secondOperationPosition] == '*'
                              || sourceExpression.Expression[secondOperationPosition] == '/')
-                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                             && string.IsNullOrWhiteSpace(operands[valuesCounter + 1]))
                         {
                             return false;
                         }
@@ -91,7 +104,7 @@ namespace Calculator.Services
                     case '-':
                         if ((sourceExpression.Expression[secondOperationPosition] == '*'
                              || sourceExpression.Expression[secondOperationPosition] == '/')
-                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                             && string.IsNullOrWhiteSpace(operands[valuesCounter + 1]))
                         {
                             return false;
                         }
@@ -99,7 +112,7 @@ namespace Calculator.Services
                     case '*':
                         if ((sourceExpression.Expression[secondOperationPosition] == '*'
                              || sourceExpression.Expression[secondOperationPosition] == '/')
-                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                             && string.IsNullOrWhiteSpace(operands[valuesCounter + 1]))
                         {
                             return false;
                         }
@@ -107,7 +120,7 @@ namespace Calculator.Services
                     case '/':
                         if ((sourceExpression.Expression[secondOperationPosition] == '*'
                              || sourceExpression.Expression[secondOperationPosition] == '/')
-                             && string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+                             && string.IsNullOrWhiteSpace(operands[valuesCounter + 1]))
                         {
                             return false;
                         }
@@ -116,16 +129,6 @@ namespace Calculator.Services
                 firstOperationPosition = secondOperationPosition;
                 valuesCounter++;
             }
-            if (values.Length > 2 && string.IsNullOrWhiteSpace(values[valuesCounter]))
-            {
-                return false;
-            }
-           
-
-            //if (values.Length == 2 && string.IsNullOrWhiteSpace(values[valuesCounter]) && ! string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
-            //{
-            //    return false;
-            //}
 
             return true;
         }
