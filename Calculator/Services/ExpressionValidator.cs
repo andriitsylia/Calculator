@@ -13,7 +13,7 @@ namespace Calculator.Services
                 return (false, "invalid expression (operands)");
             }
 
-            if (!DoubleOperationCheck(sourceExpression))
+            if (!OperationCheck(sourceExpression))
             {
                 return (false, "invalid expression (operations)");
             }
@@ -61,7 +61,7 @@ namespace Calculator.Services
             return true;
         }
 
-        private bool DoubleOperationCheck(SourceExpression sourceExpression)
+        private bool OperationCheck(SourceExpression sourceExpression)
         {
             char[] operations = new char[] { '+', '-', '*', '/' };
             string[] values = sourceExpression.Expression.Split(operations, StringSplitOptions.TrimEntries);
@@ -116,10 +116,17 @@ namespace Calculator.Services
                 firstOperationPosition = secondOperationPosition;
                 valuesCounter++;
             }
-            if (string.IsNullOrWhiteSpace(values[valuesCounter]))
+            if (values.Length > 2 && string.IsNullOrWhiteSpace(values[valuesCounter]))
             {
                 return false;
             }
+           
+
+            //if (values.Length == 2 && string.IsNullOrWhiteSpace(values[valuesCounter]) && ! string.IsNullOrWhiteSpace(values[valuesCounter + 1]))
+            //{
+            //    return false;
+            //}
+
             return true;
         }
 
