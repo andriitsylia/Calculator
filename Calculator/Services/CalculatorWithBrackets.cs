@@ -59,6 +59,10 @@ namespace Calculator.Services
                     (serviceExpression, posEnd) = Parse(expression[(i + 1)..]);
                     i = posBegin + posEnd + 1;
                     simpleString += serviceExpression.Value.ToString();
+                    if (!serviceExpression.Valid)
+                    {
+                        return (serviceExpression, posEnd);
+                    }
                 }
                 i++;
             }
